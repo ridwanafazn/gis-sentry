@@ -49,7 +49,10 @@ type TopSite = {
 
 async function loadContext() {
   const [sitesRaw, metaRaw] = await Promise.all([
-    readFile(path.join(process.cwd(), "public", "data", "top-sites.json"), "utf8"),
+    readFile(
+      path.join(process.cwd(), "public", "data", "top-sites.json"),
+      "utf8",
+    ),
     readFile(path.join(process.cwd(), "public", "data", "meta.json"), "utf8"),
   ]);
 
@@ -80,7 +83,10 @@ export async function POST(request: Request) {
   try {
     parsed = bodySchema.parse(await request.json());
   } catch {
-    return Response.json({ error: "Payload pesan tidak valid." }, { status: 400 });
+    return Response.json(
+      { error: "Payload pesan tidak valid." },
+      { status: 400 },
+    );
   }
 
   const { sites, meta } = await loadContext();
@@ -113,6 +119,9 @@ Aturan:
 4. Maksimal 4 kalimat kecuali diminta detail.
 5. Jangan membuat geometri atau peta sendiri.
 6. Untuk pertanyaan "kenapa", definisi, metodologi, atau keputusan model, panggil search_docs dan kutip sumbernya dalam format [source § heading].
+7. Tulis sitasi dengan path file asli dari hasil search_docs, contoh: [data/knowledge/01-methodology.md § Skor weighted-v1]. Jangan menulis kata "source", jangan membuat markdown link, menambahkan "(source)", atau menggabungkan beberapa sitasi dalam satu bracket.
+8. Jangan menulis kalimat pembuka tentang mencari dokumen ("I'll check...", "Let me...", "Saya akan cek..."). Langsung jawab.
+9. Hindari ampersand (&) dan titik dua (:) sebagai gaya copy. Gunakan kalimat langsung atau bullet. Titik dua hanya untuk data teknis yang memang perlu.
 `.trim();
 
   const tools = {
@@ -135,7 +144,9 @@ Aturan:
       }),
       execute: async ({ h3 }) => {
         const site = sites.find((item) => item.h3 === h3);
-        return site ?? { error: `H3 ${h3} tidak ada di daftar kandidat top-8.` };
+        return (
+          site ?? { error: `H3 ${h3} tidak ada di daftar kandidat top-8.` }
+        );
       },
     }),
     search_docs: tool({
@@ -167,7 +178,10 @@ Aturan:
   } catch (error) {
     console.error("copilot failed", error);
     return Response.json(
-      { error: "Copilot gagal memanggil OpenCode Go. Cek key, model, dan kuota." },
+      {
+        error:
+          "Copilot gagal memanggil OpenCode Go. Cek key, model, dan kuota.",
+      },
       { status: 502 },
     );
   }

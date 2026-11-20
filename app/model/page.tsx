@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 import metrics from "@/public/data/ml/metrics.json";
 import dataset from "@/public/data/ml/dataset-summary.json";
 
@@ -13,7 +14,10 @@ type Stat = { mean: number; std: number };
 const mlCv = metrics.ml.cv as Record<string, Stat>;
 const baseCv = metrics.baseline.cv as Record<string, Stat>;
 const mlTransfer = metrics.ml.subang_transfer as Record<string, number | null>;
-const baseTransfer = metrics.baseline.subang_transfer as Record<string, number | null>;
+const baseTransfer = metrics.baseline.subang_transfer as Record<
+  string,
+  number | null
+>;
 
 const CV_ROWS = [
   { key: "precision@10", label: "Precision@10" },
@@ -49,18 +53,20 @@ export default function ModelReport() {
   return (
     <main className="report-page">
       <nav className="report-nav">
-        <Link href="/">← Kembali ke peta</Link>
+        <Link href="/">
+          <ArrowLeft size={14} strokeWidth={1.75} />
+          Kembali ke peta
+        </Link>
         <span>GIS Sentry · Model Report</span>
       </nav>
 
       <header className="report-header">
-        <div className="report-pill">Phase 3 · LightGBM ranker</div>
         <h1>ML vs weighted-v1</h1>
         <p className="report-lead">
-          Uji apakah LightGBM bisa mengalahkan baseline weighted-v1 untuk memilih
-          lokasi minimarket. Evaluasi memakai spatial block CV dan holdout
-          Kabupaten Subang. Hasilnya: ML menang di CV regional, tetapi kalah saat
-          ditransfer ke Subang. Produksi tetap memakai weighted-v1.
+          Uji apakah LightGBM bisa mengalahkan baseline weighted-v1 untuk
+          memilih lokasi minimarket. Evaluasi memakai spatial block CV dan
+          holdout Kabupaten Subang. Hasilnya, ML menang di CV regional, tetapi
+          kalah saat ditransfer ke Subang. Produksi tetap memakai weighted-v1.
         </p>
       </header>
 
@@ -120,11 +126,22 @@ export default function ModelReport() {
                   ml && base ? (ml.mean - base.mean).toFixed(3) : "—";
                 return (
                   <tr key={row.key}>
-                    <td>{row.label}</td>
-                    <td className="mono">{fmtStat(ml)}</td>
-                    <td className="mono">{fmtStat(base)}</td>
-                    <td className={ml && base && ml.mean > base.mean ? "delta-up" : "delta-flat"}>
-                      {diff}
+                    <td data-label="Metrik">{row.label}</td>
+                    <td className="mono" data-label="LightGBM">
+                      <span className="report-cell-value">{fmtStat(ml)}</span>
+                    </td>
+                    <td className="mono" data-label="Weighted-v1">
+                      <span className="report-cell-value">{fmtStat(base)}</span>
+                    </td>
+                    <td
+                      data-label="Selisih"
+                      className={
+                        ml && base && ml.mean > base.mean
+                          ? "delta-up"
+                          : "delta-flat"
+                      }
+                    >
+                      <span className="report-cell-value">{diff}</span>
                     </td>
                   </tr>
                 );
@@ -137,12 +154,15 @@ export default function ModelReport() {
       <section className="report-section">
         <div className="report-section-head">
           <h2>Subang transfer test</h2>
-          <span>Train di luar Subang · uji di {dataset.subangCells.toLocaleString("id-ID")} sel Subang</span>
+          <span>
+            Train di luar Subang · uji di{" "}
+            {dataset.subangCells.toLocaleString("id-ID")} sel Subang
+          </span>
         </div>
         <p className="report-note">
-          Ini uji yang paling relevan untuk produk: apakah model dari wilayah lain
-          bisa memilih lokasi di Subang? Hanya {dataset.subangPositives} sel
-          positif di Subang, jadi metriknya berisiko tinggi.
+          Ini uji yang paling relevan untuk produk. Apakah model dari wilayah
+          lain bisa memilih lokasi di Subang? Hanya {dataset.subangPositives}{" "}
+          sel positif di Subang, jadi metriknya berisiko tinggi.
         </p>
         <div className="report-table-wrap">
           <table className="report-table">
@@ -168,11 +188,24 @@ export default function ModelReport() {
                         : "seri";
                 return (
                   <tr key={row.key}>
-                    <td>{row.label}</td>
-                    <td className="mono">{fmt(ml)}</td>
-                    <td className="mono">{fmt(base)}</td>
-                    <td className={winner === "v1" ? "winner-v1" : winner === "ML" ? "winner-ml" : ""}>
-                      {winner}
+                    <td data-label="Metrik">{row.label}</td>
+                    <td className="mono" data-label="LightGBM">
+                      <span className="report-cell-value">{fmt(ml)}</span>
+                    </td>
+                    <td className="mono" data-label="Weighted-v1">
+                      <span className="report-cell-value">{fmt(base)}</span>
+                    </td>
+                    <td
+                      data-label="Pemenang"
+                      className={
+                        winner === "v1"
+                          ? "winner-v1"
+                          : winner === "ML"
+                            ? "winner-ml"
+                            : ""
+                      }
+                    >
+                      <span className="report-cell-value">{winner}</span>
                     </td>
                   </tr>
                 );
@@ -182,7 +215,7 @@ export default function ModelReport() {
         </div>
 
         <div className="report-callout warn">
-          <strong>Keputusan:</strong> ML tidak dipakai sebagai skor produksi.
+          <strong>Keputusan.</strong> ML tidak dipakai sebagai skor produksi.
           Precision@10 ML 0,100 vs baseline 0,500 di Subang. Baseline lebih
           stabil karena tidak membutuhkan training label lokal. ML pipeline
           disimpan untuk diuji ulang setelah cakupan label Subang bertambah.
@@ -219,36 +252,35 @@ export default function ModelReport() {
         </div>
         <ul className="report-list">
           <li>
-            <strong>Label:</strong> {dataset.stores.toLocaleString("id-ID")} minimarket
-            Overture (Alfamart/Indomaret/Alfamidi) di bbox; {dataset.positives} sel H3
-            positif.
+            <strong>Label.</strong> {dataset.stores.toLocaleString("id-ID")}{" "}
+            minimarket Overture (Alfamart/Indomaret/Alfamidi) di bbox;{" "}
+            {dataset.positives} sel H3 positif.
           </li>
           <li>
-            <strong>PU-style weights:</strong> positif 1,0; negatif urban 0,8;
+            <strong>PU-style weights.</strong> Positif 1,0; negatif urban 0,8;
             negatif rural 0,15. Sel tanpa gerai bukan negative sejati.
           </li>
           <li>
-            <strong>Leakage guard:</strong> gerai di sel target tidak dihitung
-            sebagai fitur kompetitor.
+            <strong>Leakage guard.</strong> Gerai target bukan fitur kompetitor.
           </li>
           <li>
-            <strong>Spatial CV:</strong> GroupKFold 5 fold berdasarkan blok
+            <strong>Spatial CV.</strong> GroupKFold 5 fold berdasarkan blok
             0,05°; bukan random split.
           </li>
           <li>
-            <strong>Evaluasi:</strong> Precision@K dan NDCG@K pada kandidat urban
-            (populasi catchment ≥ median).
+            <strong>Evaluasi.</strong> Precision@K dan NDCG@K pada kandidat
+            urban (populasi catchment ≥ median).
           </li>
           <li>
-            <strong>Holdout:</strong> Subang dipisahkan dari training untuk menguji
-            transfer, bukan hanya interpolasi.
+            <strong>Holdout.</strong> Subang dipisahkan dari training untuk
+            menguji transfer, bukan hanya interpolasi.
           </li>
         </ul>
       </section>
 
       <footer className="report-footer">
         <span>
-          Dataset: {metrics.dataset.rows.toLocaleString("id-ID")} sel ·{" "}
+          Dataset {metrics.dataset.rows.toLocaleString("id-ID")} sel ·{" "}
           {metrics.dataset.positives.toLocaleString("id-ID")} positif ·{" "}
           {metrics.dataset.cv}
         </span>

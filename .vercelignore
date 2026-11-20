@@ -1,0 +1,14 @@
+node_modules
+.next
+data/population
+data/overture
+data/osm
+data/ml/features.csv
+data/ml/predictions.csv
+.env.local
+.env*.local
+*.tif
+data/memo
+data/tmp-*
+data/ui-*
+data/ui-*.png

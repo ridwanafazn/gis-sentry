@@ -2,6 +2,9 @@ import { getPool } from "@/lib/db";
 
 export const runtime = "nodejs";
 
+const CACHE_CONTROL =
+  "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800";
+
 const MVT_SQL = `
 WITH bounds AS (
   SELECT ST_TileEnvelope($1::int, $2::int, $3::int) AS geom
@@ -53,22 +56,32 @@ export async function GET(
   if (!pool) {
     return new Response(null, {
       status: 204,
-      headers: { "X-GIS-Sentry": "database-not-configured" },
+      headers: {
+        "X-GIS-Sentry": "database-not-configured",
+        "Cache-Control": CACHE_CONTROL,
+      },
     });
   }
 
   try {
-    const result = await pool.query<{ mvt: Buffer | null }>(MVT_SQL, [zi, xi, yi]);
+    const result = await pool.query<{ mvt: Buffer | null }>(MVT_SQL, [
+      zi,
+      xi,
+      yi,
+    ]);
     const mvt = result.rows[0]?.mvt;
 
     if (!mvt || mvt.length === 0) {
-      return new Response(null, { status: 204 });
+      return new Response(null, {
+        status: 204,
+        headers: { "Cache-Control": CACHE_CONTROL },
+      });
     }
 
     return new Response(new Uint8Array(mvt), {
       headers: {
         "Content-Type": "application/vnd.mapbox-vector-tile",
-        "Cache-Control": "public, max-age=60, s-maxage=300",
+        "Cache-Control": CACHE_CONTROL,
       },
     });
   } catch (error) {

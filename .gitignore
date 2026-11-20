@@ -1,8 +1,11 @@
 node_modules/
 .next/
 out/
+.env
 .env.local
 .env*.local
+.env.vercel
+!.env.example
 data/osm/*.json
 data/population/*.tif
 data/overture/*.geojson
@@ -11,3 +14,33 @@ data/ml/predictions.csv
 *.tsbuildinfo
 .DS_Store
 data/overture/*.state
+.vercel
+
+# Local evidence and generated screenshots
+data/ui-r1/
+data/ui-r2/
+data/ui-r3/
+data/ui-r4/
+data/ui-r5-r6/
+data/ui-r7/
+data/ui-r8/
+data/ui-about/*
+!data/ui-about/verification.json
+data/ui-*.png
+data/tmp-*
+
+# Portfolio assets: keep the final banner, gallery, and README only
+data/ui-portfolio/raw/
+data/ui-portfolio/*.html
+data/ui-portfolio/*.cjs
+data/ui-portfolio/banner-map.png
+data/ui-portfolio/architecture-1600x1000.png
+data/ui-portfolio/memo-1600x1000.png
+data/ui-portfolio/memo-indomaret.pdf
+data/ui-portfolio/memo-indomaret.png
+
+# Agent tooling
+.agents/
+.codex/
+.impeccable/*
+!.impeccable/design-full.md

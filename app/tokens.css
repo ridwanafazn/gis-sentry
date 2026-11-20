@@ -1,0 +1,104 @@
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --canvas: #f5f2ea;
+  --canvas-2: #eeeadf;
+  --surface: #ffffff;
+  --surface-2: #f7f4ec;
+  --surface-3: #ebe6da;
+
+  /* Ink */
+  --ink: #1b211c;
+  --ink-soft: #3e4740;
+  --muted: #626c64;
+  --muted-2: #666f67;
+
+  /* Lines */
+  --line: #dad5c8;
+  --line-strong: #c6bfb0;
+
+  /* Accent & states */
+  --accent: #1f6b4f;
+  --accent-hover: #18553f;
+  --accent-soft: #e4eee8;
+  --accent-ink: #0f3d2c;
+  --accent-line: #c9ded2;
+  --warn: #8a5a12;
+  --warn-soft: #f5ead8;
+  --warn-line: #e4c9a6;
+  --danger: #a13b32;
+  --danger-soft: #f6e3e0;
+  --danger-line: #e8c4bf;
+  --info: #315e7a;
+  --info-soft: #e5edf2;
+  --on-accent: #ffffff;
+
+  /* Data ramp (flat, sequential) */
+  --h3-0: #ede9dd;
+  --h3-1: #d8e5dc;
+  --h3-2: #a9c8b7;
+  --h3-3: #5d9a7b;
+  --h3-4: #1f6b4f;
+
+  /* Type */
+  --font-sans:
+    "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-xs: 11px;
+  --text-sm: 12px;
+  --text-base: 14px;
+  --text-md: 15px;
+  --text-lg: 18px;
+  --text-xl: 24px;
+  --text-2xl: 32px;
+
+  /* Space */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+
+  /* Shape & motion */
+  --control-h: 44px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+  --shadow-overlay: 0 18px 44px rgba(27, 33, 28, 0.14);
+  --dur: 160ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* Legacy aliases used by older markup/styles */
+  --bg: var(--canvas);
+  --panel: var(--surface);
+  --panel-2: var(--surface-2);
+  --border: var(--line);
+  --border-soft: var(--line);
+  --text: var(--ink);
+  --accent-2: var(--info);
+  --radius: var(--radius-lg);
+  --shadow: var(--shadow-overlay);
+}
+
+html {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}

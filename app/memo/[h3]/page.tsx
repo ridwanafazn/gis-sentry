@@ -59,7 +59,6 @@ export default async function MemoPage({ params, searchParams }: Props) {
       <article className="memo-sheet">
         <div className="memo-top">
           <div>
-            <div className="memo-kicker">GIS SENTRY · DECISION MEMO</div>
             <h1 className="memo-title">Evaluasi Lokasi</h1>
             <div className="memo-meta">
               H3 {site.h3} · {site.lat.toFixed(5)}, {site.lng.toFixed(5)} ·{" "}
@@ -73,7 +72,7 @@ export default async function MemoPage({ params, searchParams }: Props) {
         <p className="memo-lead">{recommendation}</p>
 
         <section className="memo-section">
-          <h2>1 · Skor &amp; faktor</h2>
+          <h2>1 · Skor dan faktor</h2>
           <div className="memo-score-row">
             <div className="memo-score">
               {site.score.toFixed(1)}
@@ -82,7 +81,9 @@ export default async function MemoPage({ params, searchParams }: Props) {
             <div className="memo-factors">
               <div className="memo-factor">
                 <div className="memo-factor-label">Demand</div>
-                <div className="memo-factor-value">{Math.round(site.demand)}</div>
+                <div className="memo-factor-value">
+                  {Math.round(site.demand)}
+                </div>
               </div>
               <div className="memo-factor">
                 <div className="memo-factor-label">Kompetisi</div>
@@ -92,7 +93,9 @@ export default async function MemoPage({ params, searchParams }: Props) {
               </div>
               <div className="memo-factor">
                 <div className="memo-factor-label">Akses</div>
-                <div className="memo-factor-value">{Math.round(site.access)}</div>
+                <div className="memo-factor-value">
+                  {Math.round(site.access)}
+                </div>
               </div>
               <div className="memo-factor">
                 <div className="memo-factor-label">Risiko</div>
@@ -107,10 +110,12 @@ export default async function MemoPage({ params, searchParams }: Props) {
         </section>
 
         <section className="memo-section">
-          <h2>2 · Catchment &amp; akses</h2>
+          <h2>2 · Catchment dan akses</h2>
           <div className="memo-grid">
             <div className="memo-item">
-              <div className="memo-item-value">{fmt(site.population_1_5km)}</div>
+              <div className="memo-item-value">
+                {fmt(site.population_1_5km)}
+              </div>
               <div className="memo-item-label">Populasi ≤ 1,5 km</div>
             </div>
             <div className="memo-item">
@@ -122,15 +127,11 @@ export default async function MemoPage({ params, searchParams }: Props) {
               <div className="memo-item-label">Gerai ≤ 1 km</div>
             </div>
             <div className="memo-item">
-              <div className="memo-item-value">
-                {km(site.nearest_store_km)}
-              </div>
+              <div className="memo-item-value">{km(site.nearest_store_km)}</div>
               <div className="memo-item-label">Gerai terdekat</div>
             </div>
             <div className="memo-item">
-              <div className="memo-item-value">
-                {km(site.nearest_road_km)}
-              </div>
+              <div className="memo-item-value">{km(site.nearest_road_km)}</div>
               <div className="memo-item-label">Jalan arteri terdekat</div>
             </div>
             <div className="memo-item">
@@ -186,13 +187,13 @@ export default async function MemoPage({ params, searchParams }: Props) {
         </section>
 
         <section className="memo-section">
-          <h2>4 · Risiko &amp; batasan</h2>
+          <h2>4 · Risiko dan batasan</h2>
           <div className="memo-callout">
             Risiko banjir (InaRISK) dan zonasi/RDTR belum terhubung; skor risiko
             masih placeholder 0. Validasi constraint tetap wajib sebelum
-            keputusan final. Model yang dipakai adalah <strong>weighted-v1</strong>;
-            LightGBM sudah dievaluasi tetapi tidak dipakai karena kalah pada uji
-            transfer Subang.
+            keputusan final. Model yang dipakai adalah{" "}
+            <strong>weighted-v1</strong>; LightGBM sudah dievaluasi tetapi tidak
+            dipakai karena kalah pada uji transfer Subang.
           </div>
         </section>
 
@@ -210,7 +211,9 @@ export default async function MemoPage({ params, searchParams }: Props) {
           <ul className="memo-sources">
             <li>OpenStreetMap (ODbL) — gerai, anchor, jalan.</li>
             <li>WorldPop 2020 constrained 100 m — populasi.</li>
-            <li>Overture Places (CDLA-Permissive 2.0) — label evaluasi model.</li>
+            <li>
+              Overture Places (CDLA-Permissive 2.0) — label evaluasi model.
+            </li>
             <li>PostGIS — skor, tile, dan simulasi kanibalisasi.</li>
           </ul>
         </section>

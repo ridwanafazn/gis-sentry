@@ -1,0 +1,98 @@
+{
+  "checkedAt": "2026-11-21",
+  "deploymentId": "dpl_7BuXAG1hdsmvbirZVr8WqdjcF5H3",
+  "deploymentUrl": "https://gis-sentry-im0e2xaul-ridwan-ahmad-fauzans-projects.vercel.app",
+  "productionAlias": "https://gis-sentry.vercel.app",
+  "target": "production",
+  "readyState": "READY",
+  "deploymentProtection": [],
+  "basemap": "CARTO Positron",
+  "health": {
+    "status": 200,
+    "ok": true,
+    "db": true,
+    "aiConfigured": true,
+    "productionModel": "weighted-v1"
+  },
+  "pages": {
+    "/": 200,
+    "/about": 200,
+    "/about/api": 200,
+    "/about/glossary": 200,
+    "/model": 200
+  },
+  "api": {
+    "/api/knowledge": 200,
+    "/api/simulate": 200,
+    "/api/tiles/11/1636/1061": {
+      "status": 200,
+      "contentType": "application/vnd.mapbox-vector-tile"
+    },
+    "/api/tiles/11/1635/1061": {
+      "status": 204
+    },
+    "/api/memo": {
+      "status": 200,
+      "bytes": 26354,
+      "pages": 1,
+      "fonts": [
+        "IBMPlexMono",
+        "IBMPlexMono-Medium",
+        "IBMPlexSans",
+        "IBMPlexSans-SemiBold"
+      ],
+      "title": "Decision memo H3 898c16aa36bffff",
+      "score": "99.4 to 55.8 with Indomaret cannibalization"
+    },
+    "/api/copilot": {
+      "status": 200,
+      "mode": "streaming text"
+    }
+  },
+  "tileCache": {
+    "xVercelCache": "HIT",
+    "cacheControl": "public, max-age=300"
+  },
+  "providerLeak": {
+    "homeHtml": false,
+    "aboutHtml": false,
+    "aboutApiHtml": false
+  },
+  "portfolioAssets": {
+    "banner": "data/ui-portfolio/banner-1600x900.png",
+    "gallery": [
+      "data/ui-portfolio/gallery-01-map-1600x1000.png",
+      "data/ui-portfolio/gallery-02-simulation-1600x1000.png",
+      "data/ui-portfolio/gallery-03-copilot-1600x1000.png",
+      "data/ui-portfolio/gallery-04-memo-1600x1000.png",
+      "data/ui-portfolio/gallery-05-model-1600x1000.png",
+      "data/ui-portfolio/gallery-06-architecture-1600x1000.png"
+    ],
+    "readme": "data/ui-portfolio/README.md"
+  },
+  "evidence": [
+    "data/ui-about/final/prod-home-1440.png",
+    "data/ui-about/final/prod-about-1440.png",
+    "data/ui-about/final/prod-about-390.png",
+    "data/ui-about/final/prod-api-1440.png",
+    "data/ui-about/final/prod-api-390.png",
+    "data/ui-about/final/prod-glossary-1440.png",
+    "data/ui-about/final/prod-glossary-390.png",
+    "data/ui-about/final/memo.pdf",
+    "data/ui-about/final/memo.png",
+    "data/ui-portfolio/banner-1600x900.png",
+    "data/ui-portfolio/gallery-01-map-1600x1000.png",
+    "data/ui-portfolio/gallery-02-simulation-1600x1000.png",
+    "data/ui-portfolio/gallery-03-copilot-1600x1000.png",
+    "data/ui-portfolio/gallery-04-memo-1600x1000.png",
+    "data/ui-portfolio/gallery-05-model-1600x1000.png",
+    "data/ui-portfolio/gallery-06-architecture-1600x1000.png"
+  ],
+  "notes": [
+    "Production copilot uses the restored OpenCode Go backend but the provider is not shown in the UI.",
+    "Memo PDF is one A4 page with embedded IBM Plex fonts and the paper, ink, forest palette.",
+    "First cold tile load can take a few seconds before the edge cache is warm.",
+    "The about page product screenshot is a static capture and must be refreshed when the main UI changes.",
+    "Portfolio assets were captured on 21 November 2026 from production with decimal scores and the Indomaret cannibalization case."
+  ]
+}

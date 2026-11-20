@@ -6,7 +6,7 @@ import type { Layers, Site } from "@/lib/types";
 
 const BASEMAP =
   process.env.NEXT_PUBLIC_BASEMAP_STYLE ??
-  "https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json";
+  "https://basemaps.cartocdn.com/gl/positron-gl-style/style.json";
 
 const CENTER: [number, number] = [107.7583, -6.5716];
 
@@ -15,15 +15,15 @@ const SCORE_COLOR = [
   ["linear"],
   ["get", "score"],
   0,
-  "#7f1d1d",
+  "#ede9dd",
   25,
-  "#b45309",
+  "#d8e5dc",
   50,
-  "#eab308",
+  "#a9c8b7",
   75,
-  "#22c55e",
+  "#5d9a7b",
   100,
-  "#06b6d4",
+  "#1f6b4f",
 ];
 
 function aoiPolygon(lat: number, lng: number, radiusKm: number) {
@@ -32,7 +32,8 @@ function aoiPolygon(lat: number, lng: number, radiusKm: number) {
   for (let i = 0; i <= points; i += 1) {
     const angle = (i / points) * Math.PI * 2;
     const dx = (radiusKm / 111.32) * Math.cos(angle);
-    const dy = (radiusKm / (111.32 * Math.cos((lat * Math.PI) / 180))) * Math.sin(angle);
+    const dy =
+      (radiusKm / (111.32 * Math.cos((lat * Math.PI) / 180))) * Math.sin(angle);
     coords.push([lng + dy, lat + dx]);
   }
   return {
@@ -46,18 +47,37 @@ type Props = {
   layers: Layers;
   selected: Site | null;
   focus: { lng: number; lat: number; h3?: string } | null;
+  bottomInset?: number;
   onSelect: (site: Site) => void;
 };
 
-export default function MapCanvas({ layers, selected, focus, onSelect }: Props) {
+export default function MapCanvas({
+  layers,
+  selected,
+  focus,
+  bottomInset = 0,
+  onSelect,
+}: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    let resizeObserver: ResizeObserver | null = null;
 
     async function boot() {
+      // Let the shell and shortlist paint before MapLibre takes the main thread.
+      await new Promise<void>((resolve) => {
+        if (typeof window.requestIdleCallback === "function") {
+          window.requestIdleCallback(() => resolve(), { timeout: 700 });
+        } else {
+          window.setTimeout(resolve, 120);
+        }
+      });
+
+      if (cancelled) return;
+
       const maplibregl = await import("maplibre-gl");
       if (cancelled || !containerRef.current) return;
 
@@ -76,8 +96,19 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
       });
 
       mapRef.current = map;
-      map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-right");
-      map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-right");
+      map.addControl(
+        new maplibregl.NavigationControl({ visualizePitch: true }),
+        "top-right",
+      );
+      map.addControl(
+        new maplibregl.ScaleControl({ unit: "metric" }),
+        "bottom-right",
+      );
+
+      if (containerRef.current) {
+        resizeObserver = new ResizeObserver(() => map.resize());
+        resizeObserver.observe(containerRef.current);
+      }
 
       map.on("load", async () => {
         if (cancelled) return;
@@ -102,63 +133,94 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
         map.addSource("stores", { type: "geojson", data: stores });
         map.addSource("anchors", { type: "geojson", data: anchors });
 
-        map.addLayer({
-          id: "aoi-line",
-          type: "line",
-          source: "aoi",
-          paint: {
-            "line-color": "rgba(148, 163, 184, 0.55)",
-            "line-width": 1,
-            "line-dasharray": [3, 3],
-          },
-        });
+        // Keep H3 paint below basemap labels so place names stay readable.
+        const beforeLabel = map
+          .getStyle()
+          .layers.find((layer) => layer.type === "symbol")?.id;
 
-        map.addLayer({
-          id: "h3-fill",
-          type: "fill",
-          source: "h3",
-          "source-layer": "h3",
-          paint: {
-            // Static fallback; gradient diterapkan setelah source siap.
-            "fill-color": "#eab308",
-            "fill-opacity": 0.44,
+        map.addLayer(
+          {
+            id: "aoi-line",
+            type: "line",
+            source: "aoi",
+            paint: {
+              "line-color": "rgba(27, 33, 28, 0.35)",
+              "line-width": 1.2,
+              "line-dasharray": [3, 3],
+            },
           },
-        });
+          beforeLabel,
+        );
 
-        map.addLayer({
-          id: "h3-line",
-          type: "line",
-          source: "h3",
-          "source-layer": "h3",
-          paint: {
-            "line-color": "rgba(255, 255, 255, 0.14)",
-            "line-width": 0.35,
+        map.addLayer(
+          {
+            id: "h3-fill",
+            type: "fill",
+            source: "h3",
+            "source-layer": "h3",
+            paint: {
+              // Static fallback; ramp diterapkan setelah source siap.
+              "fill-color": "#d8e5dc",
+              "fill-opacity": 0.5,
+            },
           },
-        });
+          beforeLabel,
+        );
 
-        map.addLayer({
-          id: "h3-selected",
-          type: "line",
-          source: "h3",
-          "source-layer": "h3",
-          filter: ["==", ["get", "h3"], ""],
-          paint: {
-            "line-color": "#a7f3d0",
-            "line-width": 2.4,
-            "line-opacity": 0.95,
+        map.addLayer(
+          {
+            id: "h3-line",
+            type: "line",
+            source: "h3",
+            "source-layer": "h3",
+            paint: {
+              "line-color": "rgba(27, 33, 28, 0.14)",
+              "line-width": 0.45,
+            },
           },
-        });
+          beforeLabel,
+        );
+
+        map.addLayer(
+          {
+            id: "h3-selected-fill",
+            type: "fill",
+            source: "h3",
+            "source-layer": "h3",
+            filter: ["==", ["get", "h3"], ""],
+            paint: {
+              "fill-color": "#1f6b4f",
+              "fill-opacity": 0.16,
+            },
+          },
+          beforeLabel,
+        );
+
+        map.addLayer(
+          {
+            id: "h3-hover",
+            type: "fill",
+            source: "h3",
+            "source-layer": "h3",
+            filter: ["==", ["get", "h3"], ""],
+            paint: {
+              "fill-color": "#1b211c",
+              "fill-opacity": 0.05,
+            },
+          },
+          beforeLabel,
+        );
 
         map.addLayer({
           id: "anchors",
           type: "circle",
           source: "anchors",
           paint: {
-            "circle-radius": 2.4,
-            "circle-color": "#fbbf24",
-            "circle-opacity": 0.62,
-            "circle-stroke-color": "#3b2a05",
-            "circle-stroke-width": 0.5,
+            "circle-radius": 2.8,
+            "circle-color": "#8a5a12",
+            "circle-opacity": 0.7,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 0.7,
           },
         });
 
@@ -172,23 +234,36 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
               ["linear"],
               ["zoom"],
               10,
-              3.2,
+              3.6,
               14,
-              6.2,
+              7,
             ],
             "circle-color": [
               "match",
               ["get", "brand"],
               "Indomaret",
-              "#fb7185",
+              "#a13b32",
               "Alfamart",
-              "#38bdf8",
+              "#315e7a",
               "Alfamidi",
-              "#a78bfa",
-              "#94a3b8",
+              "#6b5b95",
+              "#8a8375",
             ],
-            "circle-stroke-color": "#05080b",
-            "circle-stroke-width": 1.2,
+            "circle-stroke-color": "#ffffff",
+            "circle-stroke-width": 1.4,
+          },
+        });
+
+        map.addLayer({
+          id: "h3-selected",
+          type: "line",
+          source: "h3",
+          "source-layer": "h3",
+          filter: ["==", ["get", "h3"], ""],
+          paint: {
+            "line-color": "#1b211c",
+            "line-width": 2.4,
+            "line-opacity": 0.95,
           },
         });
 
@@ -198,10 +273,22 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
           onSelect(feature.properties as unknown as Site);
         });
 
-        map.on("mouseenter", "h3-fill", () => {
+        let hoveredH3 = "";
+        map.on("mousemove", "h3-fill", (event) => {
+          const h3 = event.features?.[0]?.properties?.h3 as string | undefined;
+          if (h3 === hoveredH3) return;
+          hoveredH3 = h3 ?? "";
+          if (map.getLayer("h3-hover")) {
+            map.setFilter("h3-hover", ["==", ["get", "h3"], hoveredH3]);
+          }
           map.getCanvas().style.cursor = "pointer";
         });
+
         map.on("mouseleave", "h3-fill", () => {
+          hoveredH3 = "";
+          if (map.getLayer("h3-hover")) {
+            map.setFilter("h3-hover", ["==", ["get", "h3"], ""]);
+          }
           map.getCanvas().style.cursor = "";
         });
 
@@ -213,6 +300,7 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
 
     return () => {
       cancelled = true;
+      resizeObserver?.disconnect();
       mapRef.current?.remove();
       mapRef.current = null;
     };
@@ -235,6 +323,8 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
 
     set("h3-fill", layers.scores);
     set("h3-line", layers.scores);
+    set("h3-selected-fill", layers.scores);
+    set("h3-hover", layers.scores);
     set("h3-selected", layers.scores);
     set("stores", layers.stores);
     set("anchors", layers.anchors);
@@ -244,16 +334,53 @@ export default function MapCanvas({ layers, selected, focus, onSelect }: Props) 
     const map = mapRef.current;
     if (!map || !ready) return;
     const id = selected?.h3 ?? "";
-    if (map.getLayer("h3-selected")) {
-      map.setFilter("h3-selected", ["==", ["get", "h3"], id]);
+    for (const layer of ["h3-selected", "h3-selected-fill"]) {
+      if (map.getLayer(layer)) {
+        map.setFilter(layer, ["==", ["get", "h3"], id]);
+      }
     }
   }, [selected, ready]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !ready || !focus) return;
-    map.flyTo({ center: [focus.lng, focus.lat], zoom: 14.2, duration: 900 });
-  }, [focus, ready]);
+    if (!map || !ready) return;
 
-  return <div ref={containerRef} className="map" aria-label="Peta skor lokasi Subang" />;
+    map.setPadding({
+      top: 0,
+      right: 0,
+      bottom: bottomInset,
+      left: 0,
+    });
+  }, [bottomInset, ready]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !ready || !focus) return;
+
+    map.flyTo({
+      center: [focus.lng, focus.lat],
+      zoom: 14.2,
+      duration: 900,
+      padding: {
+        top: 0,
+        right: 0,
+        bottom: bottomInset,
+        left: 0,
+      },
+    });
+  }, [focus, ready, bottomInset]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="map"
+      role="region"
+      aria-label="Peta skor lokasi Subang"
+    >
+      <span className="sr-only">
+        Peta interaktif. Daftar kandidat di panel menyediakan alternatif tanpa
+        peta.
+      </span>
+    </div>
+  );
 }

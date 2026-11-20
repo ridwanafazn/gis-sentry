@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowLeft, Download, Printer } from "lucide-react";
 
 type Props = {
   h3: string;
@@ -12,13 +13,20 @@ export default function MemoActions({ h3, chain }: Props) {
 
   return (
     <div className="memo-actions">
-      <Link href={`/?site=${encodeURIComponent(h3)}`}>← Kembali ke peta</Link>
-      <a href={pdfUrl} target="_blank" rel="noreferrer">
-        Unduh PDF
-      </a>
-      <button type="button" onClick={() => window.print()}>
-        Cetak
-      </button>
+      <Link href="/">
+        <ArrowLeft size={13} strokeWidth={1.75} />
+        Kembali ke peta
+      </Link>
+      <div className="memo-actions-right">
+        <a href={pdfUrl} target="_blank" rel="noreferrer">
+          <Download size={13} strokeWidth={1.75} />
+          Unduh PDF
+        </a>
+        <button type="button" onClick={() => window.print()}>
+          <Printer size={13} strokeWidth={1.75} />
+          Cetak
+        </button>
+      </div>
     </div>
   );
 }
