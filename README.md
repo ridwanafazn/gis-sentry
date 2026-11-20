@@ -2,14 +2,17 @@
 
 Spatial decision support untuk ekspansi minimarket di Kabupaten Subang: skor lokasi per grid H3, dekomposisi faktor, kandidat lokasi, dan AI copilot yang menjawab dari data — bukan mengarang.
 
-> **Status:** Fase 0–4 selesai secara lokal — peta MVT PostGIS, WorldPop 100m, skor **weighted-v1**, simulasi kanibalisasi, copilot OpenCode Go, evaluasi LightGBM, **decision memo PDF**, **RAG dokumen**, dan **health check**.
-> ML **tidak dipakai di produksi** karena kalah saat transfer ke Subang; laporan di `/model`. Live deploy Vercel + Neon menunggu kredensial/network (lihat `docs/03-deploy.md`).
+**Live:** https://gis-sentry.vercel.app
+
+> **Status:** Fase 0–4 dan UI refactor R1–R10 dieksekusi, **live di production** — Vercel (region `sin1`) + Neon PostGIS (Singapore), peta MVT, skor **weighted-v1**, simulasi kanibalisasi, copilot OpenCode Go dengan citation chips, evaluasi LightGBM, decision memo PDF, RAG dokumen, halaman about, dan health check.
+> ML **tidak dipakai di produksi** karena kalah saat transfer ke Subang; laporan di `/model`.
+> Halaman portofolio v2 sudah diperbarui dan aset visual ada di `data/ui-portfolio/`.
 
 ---
 
 ## Yang sudah jalan
 
-- Peta MapLibre dengan basemap gelap, AOI 10 km Kota Subang.
+- Peta MapLibre dengan basemap Positron light, label di atas H3, AOI 10 km Kota Subang.
 - 24 minimarket + 57 anchor POI asli dari OpenStreetMap (AOI 10 km).
 - Populasi **WorldPop 2020 constrained 100m** per sel H3 (273.170 jiwa di AOI).
 - 233 way jalan arteri/kolektor OSM untuk skor aksesibilitas.
@@ -19,14 +22,30 @@ Spatial decision support untuk ekspansi minimarket di Kabupaten Subang: skor lok
 - Simulasi kanibalisasi per brand (Alfamart/Indomaret): gross vs net, daftar gerai yang tumpang tindih.
 - Endpoint MVT `GET /api/tiles/[z]/[x]/[y]` (PostGIS `ST_AsMVT`).
 - Endpoint simulasi `GET /api/simulate?h3=...&chain=Alfamart` (PostGIS `ST_DWithin` + distance decay).
-- Copilot OpenCode Go dengan tool `top_sites` dan `site_detail`.
+- Copilot OpenCode Go dengan tool `top_sites`, `site_detail`, dan `search_docs`; citation chips dan stop streaming.
+- UI light paper/ink + forest, desktop rail, mobile map-first bottom sheet, 44px controls.
 - **Model report `/model`**: LightGBM vs weighted-v1, spatial block CV, Subang transfer test, feature importance.
 - **Decision memo `/memo/[h3]`** + PDF `GET /api/memo?h3=...`: memo A4, gross vs net, rekomendasi.
+- **Halaman `/about`**: penjelasan produk, `/about/api` untuk dokumentasi endpoint, `/about/glossary` untuk istilah H3, anchor, LightGBM, dan RAG.
+- **Marquee teknologi** di `/about` dengan stack yang benar-benar dipakai, tanpa klaim model yang hanya dievaluasi.
+- **Skor desimal**: shortlist dan detail menampilkan 99.4, 99.0, 98.9, dan seterusnya.
+- **Portofolio v2**: halaman proyek di https://ridwanafazn.my.id/projects/gis-sentry memakai stack yang benar dan tujuh highlight berbasis bukti.
+- **Aset visual**: banner dan enam gambar galeri di `data/ui-portfolio/`, siap upload ke Cloudinary.
 - **RAG dokumen**: `data/knowledge/` + `/api/knowledge?q=...` + tool `search_docs` di copilot (BM25 + sitasi).
 - **Health check `/api/health`** untuk verifikasi deploy.
 - Skema PostGIS + seed script + Docker Compose.
 
 ---
+
+## Live demo
+
+- Aplikasi: https://gis-sentry.vercel.app
+- Portofolio: https://ridwanafazn.my.id/projects/gis-sentry
+- Tentang: https://gis-sentry.vercel.app/about
+- API: https://gis-sentry.vercel.app/about/api
+- Glosarium: https://gis-sentry.vercel.app/about/glossary
+- Model report: https://gis-sentry.vercel.app/model
+- Health: https://gis-sentry.vercel.app/api/health
 
 ## Quick start
 
@@ -164,7 +183,7 @@ Verifikasi: `GET /api/health` harus `{ "ok": true, "db": true, "aiConfigured": t
 psql $env:DATABASE_URL -c "SELECT count(*) FROM h3_cells; SELECT count(*) FROM roads;"
 ```
 
-> Live deploy belum dijalankan dari environment ini karena Vercel CLI tidak bisa menjangkau `api.vercel.com` dan belum ada kredensial produksi.
+> ✅ **Live:** https://gis-sentry.vercel.app — Vercel `sin1` + Neon PostGIS Singapore. Health production: `db:true`, `aiConfigured:true`.
 
 ---
 
@@ -173,9 +192,9 @@ psql $env:DATABASE_URL -c "SELECT count(*) FROM h3_cells; SELECT count(*) FROM r
 - **Decision memo** — PDF satu halaman dengan skor, dekomposisi faktor, kanibalisasi, rekomendasi, dan caveat. Endpoint: `/api/memo?h3=...&chain=Alfamart`. Versi cetak: `/memo/<h3>?chain=Alfamart`.
 - **RAG dokumen** — BM25 atas `public/data/rag/index.json` (metodologi, batasan, checklist lapangan, konteks Subang, evaluasi model, deploy). Copilot memanggil tool `search_docs` dan mengutip `[source § heading]`. Uji: `/api/knowledge?q=batasan%20skor`.
 - **Health check** — `/api/health` melaporkan status DB dan apakah API key AI terkonfigurasi.
-- **Deploy** — `vercel.json` + panduan lengkap di `docs/03-deploy.md` (Neon PostGIS, env Vercel, seed, verifikasi). Live deploy belum dieksekusi karena `api.vercel.com` tidak bisa diakses dari environment ini.
+- **Deploy** — live di `https://gis-sentry.vercel.app` (Vercel `sin1` + Neon PostGIS Singapore). Panduan reproduksi: `docs/03-deploy.md`. `/api/health` production: `db:true`, `aiConfigured:true`.
 
-Checklist progres lengkap: `docs/00-progress.md`.
+Checklist progres lengkap: `docs/00-progress.md`. Handoff terakhir: `docs/04-session-handoff.md`. Penilaian kesiapan portofolio: `docs/05-readiness.md`. Aset visual: `data/ui-portfolio/README.md`.
 
 ---
 
@@ -197,7 +216,7 @@ Checklist progres lengkap: `docs/00-progress.md`.
 | **1 (selesai)** | WorldPop + jalan OSM + weighted-v1 + MVT sebagai sumber peta |
 | **2 (v0 selesai)** | Simulasi kanibalisasi per brand (gross vs net) |
 | **3 (selesai — dievaluasi)** | LightGBM + spatial block CV + Subang holdout; ML kalah transfer → baseline dipertahankan |
-| **4 (lokal selesai)** | Memo PDF + halaman cetak, RAG BM25, health check, deploy prep; live deploy Vercel/Neon menunggu akses |
+| **4 (live)** | Memo PDF + halaman cetak, RAG BM25, health check, deploy Vercel + Neon — **https://gis-sentry.vercel.app** |
 
 ---
 

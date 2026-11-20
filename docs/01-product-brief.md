@@ -340,7 +340,7 @@ Semua constraint harus muncul di decision memo, bukan hanya di peta.
 3. ✅ **AOI demo** — 10 km Kota Subang; evaluasi skala kabupaten.
 4. ✅ **Catchment v0** — buffer radial 3 km + distance decay kuadratik; kanibalisasi hanya menghitung brand sendiri (Alfamart/Indomaret).
 5. ⬜ **Zonasi** — ketersediaan RDTR Subang dalam bentuk poligon.
-6. ✅ **Stack** — Next.js + MapLibre + PostGIS (Docker/Neon) + OpenCode Go; deploy Vercel direncanakan.
+6. ✅ **Stack** — Next.js + MapLibre + PostGIS (Neon) + OpenCode Go; live di https://gis-sentry.vercel.app.
 
 ---
 
