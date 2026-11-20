@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    container_name: gissentry-db
+    environment:
+      POSTGRES_DB: gissentry
+      POSTGRES_USER: gis
+      POSTGRES_PASSWORD: gis
+    ports:
+      - "5432:5432"
+    volumes:
+      - gissentry_pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gis -d gissentry"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+volumes:
+  gissentry_pgdata:

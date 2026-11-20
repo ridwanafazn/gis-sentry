@@ -1,0 +1,204 @@
+{
+  "generatedAt": "2026-11-19T22:27:32.933659+00:00",
+  "dataset": {
+    "rows": 69928,
+    "positives": 681,
+    "positiveRate": 0.009738588262212562,
+    "subangCells": 20657,
+    "subangPositives": 91,
+    "features": [
+      "population_decay",
+      "population_1_5km",
+      "anchor_decay",
+      "anchor_1_5km",
+      "competitor_decay",
+      "competitor_1_5km",
+      "nearest_competitor_km",
+      "arterial_km",
+      "local_km",
+      "access_raw",
+      "demand",
+      "competition",
+      "access"
+    ],
+    "cv": "GroupKFold(5) by 0.05-degree spatial block"
+  },
+  "baseline": {
+    "description": "weighted-v1 (demand 45%, competition 25%, access 20%, risk 10%)",
+    "cv": {
+      "baseline_precision@10": {
+        "mean": 0.12000000000000002,
+        "std": 0.116619037896906
+      },
+      "baseline_precision@25": {
+        "mean": 0.168,
+        "std": 0.1274990196040738
+      },
+      "baseline_precision@50": {
+        "mean": 0.16,
+        "std": 0.09121403400793103
+      },
+      "baseline_precision@100": {
+        "mean": 0.18,
+        "std": 0.08944271909999159
+      },
+      "baseline_ndcg@10": {
+        "mean": 0.10283727285154982,
+        "std": 0.09189726525138635
+      },
+      "baseline_ndcg@25": {
+        "mean": 0.1463168887584167,
+        "std": 0.10587975453774429
+      },
+      "baseline_ndcg@50": {
+        "mean": 0.14976268896897388,
+        "std": 0.08280099795424657
+      },
+      "baseline_ndcg@100": {
+        "mean": 0.1770651044775012,
+        "std": 0.06544277913339916
+      },
+      "baseline_roc_auc": {
+        "mean": 0.8976326734338874,
+        "std": 0.021347531011735716
+      },
+      "baseline_average_precision": {
+        "mean": 0.1358673042760033,
+        "std": 0.06581650343433712
+      }
+    },
+    "subang_transfer": {
+      "precision@10": 0.5,
+      "ndcg@10": 0.5836175861945263,
+      "precision@25": 0.28,
+      "ndcg@25": 0.3852889416943998,
+      "precision@50": 0.18,
+      "ndcg@50": 0.27279713045230614,
+      "precision@100": 0.13,
+      "ndcg@100": 0.21629269061516826,
+      "roc_auc": 0.8982104307156578,
+      "average_precision": 0.1269476838141891,
+      "candidates": 9343,
+      "positives": 89
+    }
+  },
+  "ml": {
+    "description": "LightGBM binary ranker; PU-style sample weights; own-cell stores excluded",
+    "cv": {
+      "ml_precision@10": {
+        "mean": 0.18,
+        "std": 0.14696938456699069
+      },
+      "ml_precision@25": {
+        "mean": 0.23200000000000004,
+        "std": 0.1274990196040738
+      },
+      "ml_precision@50": {
+        "mean": 0.23199999999999998,
+        "std": 0.10007996802557444
+      },
+      "ml_precision@100": {
+        "mean": 0.20800000000000002,
+        "std": 0.09173875952943772
+      },
+      "ml_ndcg@10": {
+        "mean": 0.17220582484752583,
+        "std": 0.18081463951430324
+      },
+      "ml_ndcg@25": {
+        "mean": 0.20965254225951885,
+        "std": 0.15056996676027604
+      },
+      "ml_ndcg@50": {
+        "mean": 0.21992193052461578,
+        "std": 0.11562427746304173
+      },
+      "ml_ndcg@100": {
+        "mean": 0.2191605340438334,
+        "std": 0.0826116787057977
+      },
+      "ml_roc_auc": {
+        "mean": 0.9130146759619902,
+        "std": 0.0070683176140188845
+      },
+      "ml_average_precision": {
+        "mean": 0.15839419614460176,
+        "std": 0.06550527547993422
+      }
+    },
+    "subang_transfer": {
+      "precision@10": 0.1,
+      "ndcg@10": 0.07839826897867534,
+      "precision@25": 0.16,
+      "ndcg@25": 0.13633806588610006,
+      "precision@50": 0.14,
+      "ndcg@50": 0.1317048880840968,
+      "precision@100": 0.13,
+      "ndcg@100": 0.13827735216394377,
+      "roc_auc": 0.8903668744521045,
+      "average_precision": 0.08949688616147594,
+      "candidates": 9343,
+      "positives": 89
+    }
+  },
+  "featureImportanceGain": [
+    {
+      "feature": "arterial_km",
+      "gain": 11855.501028634608
+    },
+    {
+      "feature": "access",
+      "gain": 7271.358836337924
+    },
+    {
+      "feature": "competitor_decay",
+      "gain": 5952.284615471959
+    },
+    {
+      "feature": "nearest_competitor_km",
+      "gain": 4655.834119819105
+    },
+    {
+      "feature": "population_1_5km",
+      "gain": 2840.7016453295946
+    },
+    {
+      "feature": "anchor_decay",
+      "gain": 2813.851581454277
+    },
+    {
+      "feature": "demand",
+      "gain": 2676.24756193161
+    },
+    {
+      "feature": "population_decay",
+      "gain": 2258.63294955343
+    },
+    {
+      "feature": "competition",
+      "gain": 2254.0735863149166
+    },
+    {
+      "feature": "access_raw",
+      "gain": 1903.5381613448262
+    },
+    {
+      "feature": "competitor_1_5km",
+      "gain": 1784.0132077485323
+    },
+    {
+      "feature": "anchor_1_5km",
+      "gain": 1494.4137464016676
+    },
+    {
+      "feature": "local_km",
+      "gain": 1466.77015902102
+    }
+  ],
+  "caveats": [
+    "Label = sel H3 berisi minimarket chain Overture (Alfamart/Indomaret/Alfamidi).",
+    "Sel tanpa gerai bukan negative sejati; bobot negatif rendah (PU-style).",
+    "Precision@K dihitung pada sel urban (populasi catchment >= median).",
+    "Subang transfer = train di luar Subang, uji di Subang; sampel positif Subang kecil."
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-11-19T20:15:25.187Z",
+  "model": "weighted-v1",
+  "note": "Demand = 70% populasi WorldPop (decay 0.9 km) + 30% anchor POI. Kompetisi = gerai ≤1.5 km (decay 0.7 km). Akses = jarak ke jalan arteri + lokal. Risiko masih placeholder (0). Skor = persentil relatif AOI, bukan prediksi profit.",
+  "sources": {
+    "population": "WorldPop 2020 constrained 100m (UN-adjusted)",
+    "populationUrl": "https://data.worldpop.org/GIS/Population/Global_2000_2020_Constrained/2020/BSGM/IDN/idn_ppp_2020_constrained.tif",
+    "stores": "OpenStreetMap shop=convenience",
+    "anchors": "OpenStreetMap amenity/railway",
+    "roads": "OpenStreetMap highway"
+  },
+  "weights": {
+    "demand": 0.45,
+    "competition": 0.25,
+    "access": 0.2,
+    "risk": 0.1
+  },
+  "center": {
+    "lat": -6.5716,
+    "lng": 107.7583
+  },
+  "radiusKm": 10,
+  "h3Resolution": 9,
+  "population": {
+    "totalInAoi": 273170,
+    "cellsWithPopulation": 1276
+  },
+  "counts": {
+    "stores": 24,
+    "brandedStores": 15,
+    "anchors": 57,
+    "roads": 233,
+    "h3Cells": 2982,
+    "candidateSites": 8
+  }
+}

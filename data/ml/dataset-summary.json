@@ -1,0 +1,24 @@
+{
+  "generatedAt": "2026-11-19T22:21:37.398Z",
+  "region": "bbox Greater Subang (training) + Subang polygon (holdout)",
+  "cells": 69928,
+  "positives": 681,
+  "negatives": 69247,
+  "positiveRate": 0.009738588262212562,
+  "subangCells": 20657,
+  "subangPositives": 91,
+  "blocks": 240,
+  "stores": 1390,
+  "brandedStores": 787,
+  "brandedCells": 684,
+  "anchors": 1569,
+  "roadSegments": 140298,
+  "populationInCells": 12181427,
+  "sources": {
+    "labels": "Overture Places (convenience_store + brand names), CDLA-Permissive 2.0",
+    "admin": "Nominatim / OpenStreetMap boundary",
+    "population": "WorldPop 2020 constrained 100m (UN-adjusted)",
+    "anchors": "OpenStreetMap amenity/railway",
+    "roads": "OpenStreetMap highway"
+  }
+}

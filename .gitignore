@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+.env.local
+.env*.local
+data/osm/*.json
+data/population/*.tif
+data/overture/*.geojson
+data/ml/features.csv
+data/ml/predictions.csv
+*.tsbuildinfo
+.DS_Store
+data/overture/*.state
